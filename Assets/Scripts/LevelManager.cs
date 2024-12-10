@@ -21,40 +21,35 @@ public class LevelManager : MonoBehaviour
 
     void Start()
     {
-        Debug.Log($"LevelManager Start called in scene: {SceneManager.GetActiveScene().name}");
         InitializeLevel();
     }
 
     void Update()
     {
+        // Wait for the ball action to complete before proceeding
         if (ballController.GetBallAction() == BallAction.FINISHED)
         {
-            Debug.Log("Ball action is FINISHED. Waiting for turn end...");
             isWaitingForTurnEnd = true;
         }
 
-        if (isWaitingForTurnEnd)
+        if (isWaitingForTurnEnd && IsThrowOver())
         {
-            if (IsThrowOver())
+            // Handle the end of a throw, depending on pin status
+            if (AllPinsDown())
             {
-                Debug.Log("Throw is over. Checking pin status...");
-                if (AllPinsDown())
-                {
-                    Debug.Log("All pins are down!");
-                    ProceedToNextState();
-                }
-                else
-                {
-                    Debug.Log("Not all pins are down. Changing turn.");
-                    ChangeTurn();
-                }
-                isWaitingForTurnEnd = false;
+                ProceedToNextState();
             }
+            else
+            {
+                ChangeTurn();
+            }
+            isWaitingForTurnEnd = false;
         }
     }
 
     private void InitializeLevel()
     {
+        // Set the initial game state and configure references
         currentState = GameState.LEVEL1;
         currentTurn = 1;
         isWaitingForTurnEnd = false;
@@ -63,39 +58,27 @@ public class LevelManager : MonoBehaviour
         if (ball != null)
         {
             ballController = ball.GetComponent<BallController>();
-            Debug.Log("Ball and BallController initialized.");
-        }
-        else
-        {
-            Debug.LogError("Ball GameObject not found!");
         }
 
         UpdatePinsArray();
         initNumberOfPins = CountPins();
-        Debug.Log($"Initial number of pins: {initNumberOfPins}");
     }
 
     private void ProceedToNextState()
     {
+        // Transition to the next scene or win state
         if (SceneManager.GetActiveScene().name == winScene)
         {
-            Debug.Log("Game Won!");
             LoadScene(winScene);
         }
         else if (!string.IsNullOrEmpty(nextScene))
         {
-            Debug.Log($"Loading next scene: {nextScene}");
             LoadScene(nextScene);
-        }
-        else
-        {
-            Debug.LogError("Next scene not configured!");
         }
     }
 
     private void ChangeTurn()
     {
-        Debug.Log($"Changing turn. Current turn: {currentTurn}");
         if (currentTurn == 1)
         {
             RemoveDownedPins();
@@ -105,7 +88,6 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("No more turns left. Game over!");
             LoadScene(gameOverScene);
         }
     }
@@ -116,29 +98,23 @@ public class LevelManager : MonoBehaviour
         {
             SceneManager.LoadScene(sceneName);
         }
-        else
-        {
-            Debug.LogError("Scene name is null or empty!");
-        }
     }
 
     private void RemoveDownedPins()
     {
-        Debug.Log("Removing downed pins...");
-
+        // Remove pins that have been knocked down
         var remainingPins = new System.Collections.Generic.List<GameObject>();
 
         foreach (GameObject pin in pins)
         {
             PinController pinController = pin.GetComponent<PinController>();
-            if (pinController.IsPinDown())
+            if (!pinController.IsPinDown())
             {
-                Destroy(pin); // Destroy the pin
-                Debug.Log("Pin destroyed.");
+                remainingPins.Add(pin);
             }
             else
             {
-                remainingPins.Add(pin);
+                Destroy(pin);
             }
         }
 
@@ -149,20 +125,12 @@ public class LevelManager : MonoBehaviour
     {
         GameObject pinsObject = GameObject.Find("Pins");
 
-        if (pinsObject != null)
-        {
-            return pinsObject.transform.childCount;
-        }
-        else
-        {
-            Debug.LogError("Pins object not found in the scene.");
-            return 0;
-        }
+        return pinsObject != null ? pinsObject.transform.childCount : 0;
     }
 
     private void UpdatePinsArray()
     {
-        Debug.Log("Updating pins array...");
+        // Refresh the array of pin objects
         GameObject pinsObject = GameObject.Find("Pins");
 
         if (pinsObject != null)
@@ -176,17 +144,12 @@ public class LevelManager : MonoBehaviour
             }
 
             pins = tempPinsArray;
-            Debug.Log($"Pins array updated with {pinCount} pins.");
-        }
-        else
-        {
-            Debug.LogError("Pins object not found in the scene.");
         }
     }
 
     private bool IsThrowOver()
     {
-        Debug.Log("Checking if throw is over...");
+        // Determine if both pins and ball have come to rest
         bool pinsSlowedDown = true;
         foreach (GameObject pin in pins)
         {
@@ -205,7 +168,7 @@ public class LevelManager : MonoBehaviour
 
     private bool AllPinsDown()
     {
-        Debug.Log("Checking if all pins are down...");
+        // Check if all pins have been knocked down
         foreach (GameObject pin in pins)
         {
             PinController pinController = pin.GetComponent<PinController>();

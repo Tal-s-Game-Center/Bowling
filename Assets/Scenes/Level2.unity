@@ -1540,6 +1540,10 @@ PrefabInstance:
       value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 1829317547398206101, guid: edfca1aa0569d6e488da9eba631eedc0, type: 3}
+      propertyPath: rotationSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1829317547398206101, guid: edfca1aa0569d6e488da9eba631eedc0, type: 3}
       propertyPath: leftKey.m_Name
       value: Left Key
       objectReference: {fileID: 0}

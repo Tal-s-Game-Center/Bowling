@@ -9,7 +9,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private string gameOverScene; // Name of the Game Over scene
     [SerializeField] private string winScene; // Name of the Victory scene
 
-    private GameState currentState;
     private GameObject[] pins;
     private int currentTurn;
     private bool isWaitingForTurnEnd;
@@ -50,7 +49,6 @@ public class LevelManager : MonoBehaviour
     private void InitializeLevel()
     {
         // Set the initial game state and configure references
-        currentState = GameState.LEVEL1;
         currentTurn = 1;
         isWaitingForTurnEnd = false;
 
@@ -84,7 +82,7 @@ public class LevelManager : MonoBehaviour
             RemoveDownedPins();
             ballController.ResetBallPos();
             currentTurn++;
-            ballController.SetBallAction(BallAction.START);
+            ballController.SetBallAction(BallAction.PLACE);
         }
         else
         {

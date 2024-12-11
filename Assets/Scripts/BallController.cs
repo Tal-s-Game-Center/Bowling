@@ -1,6 +1,5 @@
 using System.Threading;
 using Unity.VisualScripting;
-using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Enums;
@@ -66,6 +65,11 @@ public class BallController : MonoBehaviour
         ballRB = GetComponent<Rigidbody>();
         initPos = ballRB.position;
         initRotation = ballRB.rotation;
+
+        // Show moving arrows and enable placement controls
+        leftKey.Enable();
+        rightKey.Enable();
+        currentAction = BallAction.PLACE;
     }
 
     void OnEnable()
@@ -115,11 +119,7 @@ public class BallController : MonoBehaviour
         switch (currentAction)
         {
             case BallAction.START:
-                // Show moving arrows and enable placement controls
-                movingArrowsToggle.ToggleVisibility(true);
-                leftKey.Enable();
-                rightKey.Enable();
-                currentAction = BallAction.PLACE;
+                
                 break;
 
             case BallAction.PLACE:
@@ -240,5 +240,9 @@ public class BallController : MonoBehaviour
         ballRB.position = initPos;
         ballRB.linearVelocity = Vector3.zero;
         ballRB.angularVelocity = Vector3.zero;
+        // Show moving arrows and enable placement controls
+        movingArrowsToggle.ToggleVisibility(true) ;
+        leftKey.Enable();
+        rightKey.Enable();
     }
 }

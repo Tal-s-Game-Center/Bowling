@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class PinController : MonoBehaviour
 {
-    private bool hasTriggered = false; // Flag to track if the pin has triggered already
     private bool isDown = false; // Track if the pin is down
     private Rigidbody pinRB;
 
@@ -10,7 +9,6 @@ public class PinController : MonoBehaviour
 
     void Start()
     {
-        hasTriggered = false; // Initialize the flag
         isDown = false; // Initialize the down state
         pinRB = GetComponent<Rigidbody>();
 

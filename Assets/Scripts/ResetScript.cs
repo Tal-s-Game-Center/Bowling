@@ -21,7 +21,6 @@ public class ResetScript : MonoBehaviour
     void Update()
     {
         if(activationKey.WasPressedThisFrame()){
-            Debug.Log("Shit") ;
             SceneManager.LoadScene(startSceneName) ;
         }
     }

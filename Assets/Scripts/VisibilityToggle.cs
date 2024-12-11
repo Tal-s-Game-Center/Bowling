@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class VisibilityToggle : MonoBehaviour
 {
+    [SerializeField] bool defaultState ;
     void Start()
     {
-        gameObject.SetActive(false);
+        gameObject.SetActive(defaultState);
     }
 
     // Update is called once per frame
